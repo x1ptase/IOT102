@@ -17,34 +17,43 @@
 % THIẾT LẬP BIBLATEX
 \usepackage[style=numeric-comp, sorting=none, backend=biber]{biblatex}
 \addbibresource{references.bib} % Đảm bảo file này tồn tại trong cùng thư mục
+
 % Định nghĩa tiêu đề và tác giả
 \title{\textbf{Bluetooth-Controlled 8x32 LED Matrix}}
+
 % CÁCH KHAI BÁO TÁC GIẢ TỐI GIẢN VÀ ÍT LỖI NHẤT
 \author[1]{Pham Tuan Anh}
 \author[1]{Le Tuan Kiet}
 \author[1]{Truong Thao Vi}
 \author[1]{Dang Hong Phuoc} 
+
 % Khối địa chỉ cơ quan
-\affil[1]{\small FPT University Ho Chi Minh Campus, Vietnam, Lot E2a-7, D1 Street, Saigon Hi-Tech Park, Tang Nhon Phu Ward, HCMC}
+\affil[1]{\small FPT University Ho Chi Minh Campus, Vietnam (FPTU HCM), Lot E2a-7, D1 Street, Saigon Hi-Tech Park, Tang Nhon Phu Ward, HCMC}
+
 % Khối email (Đã gỡ lệnh \\ để tránh lỗi \crcr trong affil)
 \affil{
 	\vspace{0.3cm}
 	\texttt{\small anhtph911@gmail.com, lekiet2442005@gmail.com} \\
 	\texttt{\small thaovicotntctv@gmail.com, dangp2660@gmail.com}
 }
+
 \date{} % <--- LỆNH QUAN TRỌNG ĐỂ ẨN NGÀY THÁNG NĂM
+
 \begin{document}
 	
 	\maketitle % Tạo tiêu đề và tên tác giả/địa chỉ
 	
 	% --- Abstract ---
 	\begin{abstract}
+		% ĐÃ XÓA \textbf{Abstract.} KHỎI ĐÂY - CHỈ CÒN NỘI DUNG TÓM TẮT
 		The Bluetooth-Controlled 8x32 LED Matrix project functions as a sophisticated Personal Ambient Notifier, providing a dynamic, real-time information display controlled wirelessly via a smartphone. At its core, the system utilizes an Arduino microcontroller to act as the central processing unit, integrating data from several key components. It ensures continuous environmental awareness through a DS1307 RTC (Real-Time Clock) for accurate time and date tracking, and an LM35 analog sensor for precise ambient temperature measurement. Wireless interactivity is achieved via an HC-05 Bluetooth module, enabling bi-directional data transfer for real-time remote updates of personal messages. The 8x32 LED matrix serves as the primary visual output, displaying time, temperature, and custom text efficiently, while EEPROM (Electrically Erasable Programmable Read-Only Memory) provides non-volatile storage for preserving settings and user messages even when power is off. This specialized architecture enables users to seamlessly manage and update content, positioning the project as an ideal, non-intrusive solution for personal smart environments and modern workspaces.
 	\end{abstract}
+	
 	% --- Mục lục ---
 	\newpage
 	\tableofcontents
 	\newpage
+	
 	% --- Introduction ---
 	\section{Introduction}
 	The rapid growth of the Internet of Things (IoT) and smart devices has fueled an increasing demand for flexible and non-intrusive information displays in personal environments. Traditional methods of receiving notifications, often relying on smartphone alerts or static physical notes, can be disruptive or quickly outdated. This context highlights the need for dedicated, ambient devices that offer relevant information without demanding constant attention.
