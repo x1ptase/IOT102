@@ -247,3 +247,5 @@ void showTemperature() {
   sprintf(tempStr, "%d*C", temperature);
   displayText(String(tempStr));
 }
+
+

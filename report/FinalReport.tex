@@ -13,6 +13,7 @@
 \usepackage[hidelinks]{hyperref} % Tạo siêu liên kết, KHÔNG CÓ VIỀN ĐỎ
 \usepackage{tabularx} % Gói để chỉnh sửa bảng (dùng cột X)
 \usepackage{caption} % Xử lý chú thích hình ảnh/bảng
+\usepackage{float} % ✅ thêm dòng này để cố định vị trí hình
 
 % THIẾT LẬP BIBLATEX
 \usepackage[style=numeric-comp, sorting=none, backend=biber]{biblatex}
@@ -72,11 +73,10 @@
 	\end{itemize}
 	This architecture ensures the system functions as a reliable, wirelessly controlled information display for personal environments.
 	
-	\begin{figure}[htbp]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.9\textwidth]{block_diagram.png}
+		\includegraphics[width=\textwidth]{block_diagram.png}
 		\caption{Block diagram of the developed system}
-		\label{fig:block_diagram}
 	\end{figure}
 	
 	\subsection{Components and peripheral devices}
@@ -104,21 +104,49 @@
 	\subsection{Software programming}
 	The software is the core logic that manages data acquisition, communication, processing, and display. This section describes the program flow.
 	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_1.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_2.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_3.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_4.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_5.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_6.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{pr_7.png}
+	\end{figure}
+	
 	\subsection{Programming flowchart}
 	The operational logic of the system is detailed in the flowchart in Fig.~\ref{fig:flowchart}. The logic incorporates initialization, continuous data reading (RTC, LM35, Bluetooth), processing, and updating the display based on the current mode and persistent settings retrieved from EEPROM.
 	
-	\begin{figure}[htbp]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.7\textwidth]{flowchart.png}
+		\includegraphics[width=\textwidth]{flowchart.png}
 		\caption{Programming flowchart of the developed system}
-		\label{fig:flowchart}
 	\end{figure}
 	
 	% --- Results and Discussion ---
 	\section{Results and Discussion}
 	
 	\subsection{Prototype Implementation}
-	The Personal Ambient Notifier prototype was successfully constructed, integrating all specified hardware components onto a breadboard/PCB for final testing and deployment. The system's core functionality is organized around a highly flexible user interface. The device is programmed to operate across **5 distinct Display Modes** (Mode 1 to 5) and utilize **5 Scroll Effects** (Effects 1 to 5). **EEPROM** is used to store the last operational state (mode, effect, and the most recent custom message), ensuring system function resumes immediately following a power failure or restart. Wireless control is managed via a custom **Android application** which transmits string commands through the HC-05 Bluetooth module.
+	The Personal Ambient Notifier prototype was successfully constructed, integrating all specified hardware components onto a breadboard/PCB for final testing and deployment. The system's core functionality is organized around a highly flexible user interface. The device is programmed to operate across 5 distinct Display Modes (Mode 1 to 5) and utilize 5 Scroll Effects (Effects 1 to 5). EEPROM is used to store the last operational state (mode, effect, and the most recent custom message), ensuring system function resumes immediately following a power failure or restart. Wireless control is managed via a custom Android application which transmits string commands through the HC-05 Bluetooth module.
 	
 	\subsection{Testing Results}
 	Initial functional checks were conducted, but quantitative performance metrics are still pending, as shown in Table \ref{tab:testing_results}.
