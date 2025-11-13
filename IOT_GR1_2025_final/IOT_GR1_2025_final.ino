@@ -6,7 +6,6 @@
 #include <SoftwareSerial.h>
 #include <EEPROM.h>
 
-// ===== LED MATRIX CONFIG =====
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 #define MAX_DEVICES 4
 #define CLK_PIN 13
@@ -14,59 +13,45 @@
 #define CS_PIN 10
 MD_Parola matrix = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
-// ===== BLUETOOTH CONFIG =====
 #define BT_RX 2
 #define BT_TX 3
 SoftwareSerial BT(BT_RX, BT_TX);
 
-// ===== RTC CONFIG =====
 RTC_DS1307 rtc;
-
-// ===== LM35 CONFIG =====
 #define LM35_PIN A0
 
-// ===== EEPROM ADDRESS =====
 #define ADDR_MODE 0
 #define ADDR_EFFECT 1
 #define ADDR_MSG 10
 #define MSG_MAX_LEN 50
 
-// ===== CONTROL VARIABLES =====
-int mode = 1;       // 1: Time | 2: Date | 3: Message | 4: Temp | 5: Manual Time Adjust
-int effectMode = 0; // 0:L | 1:R | 2:U | 3:D | 4:Static
+int mode = 1;
+int effectMode = 0;
 String customMessage = "HELLO FPT";
 String btBuffer = "";
 unsigned long lastUpdate = 0;
 
-// ===== TEMP VARS =====
 int manualHour = 0;
 int manualMinute = 0;
 
-// ========== SETUP ==========
 void setup() {
   Serial.begin(9600);
   BT.begin(9600);
-
   if (!rtc.begin()) while (1);
   if (!rtc.isrunning()) rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-
   matrix.begin();
   matrix.setIntensity(5);
   matrix.displayClear();
   matrix.setFont(nullptr);
-
   loadEEPROM();
-  Serial.println("=== SYSTEM READY ===");
 }
 
-// ========== MAIN LOOP ==========
 void loop() {
   DateTime now = rtc.now();
   int analogValue = analogRead(LM35_PIN);
   float voltage = analogValue * (5.0 / 1023.0);
   int temperature = voltage * 100;
 
-  // === Bluetooth đọc dữ liệu ===
   while (BT.available()) {
     char c = BT.read();
     if (c != '\n' && c != '\r') btBuffer += c;
@@ -74,7 +59,6 @@ void loop() {
 
   if (btBuffer.length() > 0) {
     char cmd = btBuffer.charAt(0);
-
     if (cmd == 'T') {
       int year = btBuffer.substring(1, 5).toInt();
       int month = btBuffer.substring(6, 8).toInt();
@@ -94,15 +78,10 @@ void loop() {
           manualMinute = n.minute();
           saveEEPROM();
         } break;
-
-        // Hiệu ứng
         case 'L': effectMode = 0; saveEEPROM(); break;
         case 'R': effectMode = 1; saveEEPROM(); break;
         case 'U': effectMode = 2; saveEEPROM(); break;
         case 'D': effectMode = 3; saveEEPROM(); break;
-        case 'S': effectMode = 4; saveEEPROM(); break;
-
-        // Chỉnh giờ tay
         case '+': if (mode == 5) manualHour = (manualHour + 1) % 24; break;
         case '-': if (mode == 5) manualHour = (manualHour + 23) % 24; break;
         case '>': if (mode == 5) manualMinute = (manualMinute + 1) % 60; break;
@@ -119,7 +98,6 @@ void loop() {
   }
 
   unsigned long nowMs = millis();
-
   switch (mode) {
     case 1: if (nowMs - lastUpdate > 1000) { showTime(); lastUpdate = nowMs; } break;
     case 2: if (nowMs - lastUpdate > 2000) { showDate(); lastUpdate = nowMs; } break;
@@ -129,7 +107,6 @@ void loop() {
   }
 }
 
-// ===== EEPROM =====
 void saveEEPROM() {
   EEPROM.write(ADDR_MODE, mode);
   EEPROM.write(ADDR_EFFECT, effectMode);
@@ -147,29 +124,19 @@ void loadEEPROM() {
   customMessage.trim();
 }
 
-// ===== DISPLAY ENGINE =====
 void displayText(String text) {
   textEffect_t effect = PA_SCROLL_LEFT;
   int speed = 80, pause = 0;
-
   switch (effectMode) {
     case 0: effect = PA_SCROLL_RIGHT; break;
     case 1: effect = PA_SCROLL_LEFT; break;
     case 2: effect = PA_SCROLL_UP; break;
     case 3: effect = PA_SCROLL_DOWN; break;
-    case 4: effect = PA_PRINT; break;
   }
-
-  if (effect == PA_PRINT) {
-    matrix.displayClear();
-    matrix.print(text.c_str());
-  } else {
-    matrix.displayText(text.c_str(), PA_CENTER, speed, pause, effect, effect);
-    while (!matrix.displayAnimate());
-  }
+  matrix.displayText(text.c_str(), PA_CENTER, speed, pause, effect, effect);
+  while (!matrix.displayAnimate());
 }
 
-// ===== SHOW FUNCTIONS =====
 void showTime() {
   DateTime now = rtc.now();
   char buffer[6];
@@ -184,11 +151,9 @@ void showDate() {
   displayText(buffer);
 }
 
-// ===== TÁCH CHUỖI KHI UP / DOWN =====
 void showMessage(String msg) {
   msg.trim();
   msg.toUpperCase();
-
   if (effectMode == 2 || effectMode == 3) {
     int totalCols = MAX_DEVICES * 8;
     const int approxCharWidth = 6;
@@ -196,20 +161,15 @@ void showMessage(String msg) {
     if (maxCharsPerLine < 1) maxCharsPerLine = 1;
     const int padSpaces = 2;
     msg += " ";
-
     int n = msg.length();
     int pos = 0;
     while (pos < n) {
       while (pos < n && msg.charAt(pos) == ' ') pos++;
       if (pos >= n) break;
-
       int end = pos + maxCharsPerLine;
       if (end > n) end = n;
-
       int lastSpace = -1;
-      for (int i = pos; i < end; i++)
-        if (msg.charAt(i) == ' ') lastSpace = i;
-
+      for (int i = pos; i < end; i++) if (msg.charAt(i) == ' ') lastSpace = i;
       String part;
       if (end >= n) {
         part = msg.substring(pos, n);
@@ -224,10 +184,8 @@ void showMessage(String msg) {
         part = msg.substring(pos, end);
         pos = end;
       }
-
       part.trim();
       if (pos < n) for (int s = 0; s < padSpaces; s++) part += " ";
-
       matrix.displayClear();
       matrix.displayReset();
       textEffect_t eff = (effectMode == 2) ? PA_SCROLL_UP : PA_SCROLL_DOWN;
